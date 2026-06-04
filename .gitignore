@@ -1,0 +1,5 @@
+# Local-only: secrets, plaintext sources, manifest. NEVER published.
+_src/
+.staticrypt.json
+node_modules/
+.DS_Store
