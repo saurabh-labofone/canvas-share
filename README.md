@@ -21,9 +21,13 @@ node tools/publish.mjs --type note   --title "Pricing notes" --in /path/to/note.
 Other commands:
 
 ```bash
-node tools/publish.mjs --list                 # list everything published
+node tools/publish.mjs --list                 # list everything published (🔒 gated / 🔓 public)
+node tools/publish.mjs --unlock <slug> --push # remove the password from one page (make it public)
+node tools/publish.mjs --lock <slug> --push   # re-gate a public page
 node tools/publish.mjs --remove <slug>        # unpublish an item
 node tools/publish.mjs --reencrypt-all --push # rotate after changing the password in _src/.gate.env
 ```
+
+A page can be published open from the start with `--no-encrypt`. Public pages are marked `public: true` in the manifest, so password rotation never re-gates them. The hub `index.html` is always gated regardless — `--unlock` only opens the named page.
 
 Drop `--push` to build locally without pushing. GitHub Pages takes ~30–90s to go live after a push.
