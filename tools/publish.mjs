@@ -158,11 +158,24 @@ function encrypt(plainPath, outDir, env, title) {
   ], { cwd: ROOT, stdio: ['ignore', 'ignore', 'inherit'] });
 }
 
+// Render one content page to its public path: plaintext if marked public, else encrypted.
+function renderPage(item, env) {
+  const plainPagePath = join(PLAIN, item.file);
+  if (!existsSync(plainPagePath)) { console.error(`  (plaintext missing: ${item.file})`); return; }
+  const outDir = dirname(item.file);
+  if (item.public) {
+    mkdirSync(join(ROOT, outDir), { recursive: true });
+    copyFileSync(plainPagePath, join(ROOT, item.file));
+  } else {
+    encrypt(plainPagePath, outDir, env, item.title);
+  }
+}
+
+// The index is the hub's table of contents + gate — always encrypted.
 function rebuildIndex(items, env) {
   const plainIndex = join(PLAIN, 'index.html');
   writeFileSync(plainIndex, renderIndex(items));
-  if (args['no-encrypt']) copyFileSync(plainIndex, join(ROOT, 'index.html'));
-  else encrypt(plainIndex, '.', env, 'Canvas — Shared work');
+  encrypt(plainIndex, '.', env, 'Canvas — Shared work');
 }
 
 // ---------- git ----------
@@ -194,23 +207,20 @@ function cmdPublish() {
 
   // manifest upsert
   let items = loadManifest().filter(i => !(i.type === type && i.slug === slug));
-  items.push({ type, slug, title: args.title, blurb: args.blurb || '', date, file: rel });
+  const item = { type, slug, title: args.title, blurb: args.blurb || '', date, file: rel };
+  if (args['no-encrypt']) item.public = true;
+  items.push(item);
   saveManifest(items);
 
-  // encrypt page + rebuild index
-  if (args['no-encrypt']) {
-    mkdirSync(join(ROOT, typeDir), { recursive: true });
-    copyFileSync(plainPagePath, join(ROOT, rel));
-  } else {
-    encrypt(plainPagePath, typeDir, env, args.title);
-  }
+  // render page (plaintext if public, else encrypted) + rebuild the gated index
+  renderPage(item, env);
   rebuildIndex(items, env);
   writeFileSync(join(ROOT, '.nojekyll'), '');
 
   if (args.push) gitPush(`publish: ${type} — ${slug}`);
 
   console.log('');
-  ok(`Published ${type}: ${args.title}`);
+  ok(`Published ${type}: ${args.title}${item.public ? ' (public — no password)' : ''}`);
   console.log(`  Page:  ${BASE_URL}/${rel}`);
   console.log(`  Index: ${BASE_URL}/`);
   if (!args.push) console.log('  (local only — not pushed yet)');
@@ -219,21 +229,33 @@ function cmdPublish() {
 function cmdReencryptAll() {
   const env = loadEnv();
   const items = loadManifest();
-  for (const i of items) {
-    const p = join(PLAIN, i.file);
-    if (existsSync(p)) encrypt(p, dirname(i.file), env, i.title);
-    else console.error(`  (skipped, plaintext missing: ${i.file})`);
-  }
+  for (const i of items) renderPage(i, env); // respects each item's public flag
   rebuildIndex(items, env);
   writeFileSync(join(ROOT, '.nojekyll'), '');
   if (args.push) gitPush('reencrypt: rotate gate password');
-  ok(`Re-encrypted ${items.length} page(s) + index.`);
+  ok(`Rebuilt ${items.length} page(s) + index.`);
+}
+
+function cmdSetVisibility(makePublic) {
+  const env = loadEnv();
+  const slug = slugify(makePublic ? args.unlock : args.lock);
+  const items = loadManifest();
+  const item = items.find(i => i.slug === slug);
+  if (!item) die(`No item with slug "${slug}". Use --list to see slugs.`);
+  if (makePublic) item.public = true; else delete item.public;
+  saveManifest(items);
+  renderPage(item, env);     // copy plaintext (public) or encrypt (gated)
+  rebuildIndex(items, env);  // index itself stays gated
+  writeFileSync(join(ROOT, '.nojekyll'), '');
+  if (args.push) gitPush(`${makePublic ? 'unlock' : 'lock'}: ${slug}`);
+  ok(`${makePublic ? 'Removed password from' : 'Re-gated'}: ${item.title}`);
+  console.log(`  ${BASE_URL}/${item.file}  ${makePublic ? '(no password)' : '(password required)'}`);
 }
 
 function cmdList() {
   const items = loadManifest().sort((a, b) => b.date.localeCompare(a.date));
   if (!items.length) return console.log('(nothing published yet)');
-  for (const i of items) console.log(`  [${i.type}] ${i.date}  ${i.title}  → ${BASE_URL}/${i.file}`);
+  for (const i of items) console.log(`  [${i.type}] ${i.date}  ${i.public ? '🔓 public ' : '🔒 gated  '} ${i.title}  → ${BASE_URL}/${i.file}`);
 }
 
 function cmdRemove() {
@@ -254,6 +276,8 @@ function cmdRemove() {
 
 // ---------- dispatch ----------
 if (args.list) cmdList();
+else if (args.unlock) cmdSetVisibility(true);
+else if (args.lock) cmdSetVisibility(false);
 else if (args.remove) cmdRemove();
 else if (args['reencrypt-all']) cmdReencryptAll();
 else cmdPublish();
