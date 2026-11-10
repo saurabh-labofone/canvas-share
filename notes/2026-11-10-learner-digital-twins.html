@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learner Digital Twins</title>
+<meta name="description" content="Test a critical-thinking session on five digital twins of Saudi youth before the pilot: see how each kid thinks, who the session fails and why, change it, and run it again.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fbfbfb; --surface:#ffffff; --ink:#1b1b1b; --body:#2c2b28; --dim:#46453f; --meta:#8a8984;
+  --div:#d9d7d1; --muted:#f1f0ed; --muted2:#e7e5df;
+  --yel:#ecc94e; --yel-soft:#f7e7a6;
+  --grn:#4f7d63; --grn-bg:#e6efe9; --red:#a8483b; --red-bg:#f5e4e0;
+  --shadow:0 12px 30px rgba(20,20,18,.10);
+  --sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'DM Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#131312; --surface:#1b1b1a; --ink:#efeee9; --body:#d9d8d2; --dim:#b9b8b1; --meta:#8f8e88;
+    --div:#34332f; --muted:#23221f; --muted2:#2d2c28; --yel-soft:#4a4222;
+    --grn:#74a085; --grn-bg:#1e2a23; --red:#c96a58; --red-bg:#35211d;
+    --shadow:0 12px 30px rgba(0,0,0,.45); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131312; --surface:#1b1b1a; --ink:#efeee9; --body:#d9d8d2; --dim:#b9b8b1; --meta:#8f8e88;
+  --div:#34332f; --muted:#23221f; --muted2:#2d2c28; --yel-soft:#4a4222;
+  --grn:#74a085; --grn-bg:#1e2a23; --red:#c96a58; --red-bg:#35211d;
+  --shadow:0 12px 30px rgba(0,0,0,.45); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--body);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,h5{color:var(--ink);font-weight:700;margin:0}
+p{margin:0 0 12px}
+button{font:inherit;color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+@media (max-width:640px){.wrap{padding:0 16px}body{font-size:16px}}
+
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--div)}
+.topbar .wrap{padding-top:12px;padding-bottom:12px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--meta);display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
+.topbar b{color:var(--ink);font-weight:500}
+.eyebrow{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--meta);margin-bottom:14px}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--ink)}
+h1{font-size:clamp(38px,6.4vw,66px);line-height:1.02;letter-spacing:-.035em;max-width:13ch}
+h1 em{font-style:normal;background:linear-gradient(transparent 58%,var(--yel) 58%,var(--yel) 92%,transparent 92%);padding:0 .06em}
+.lede{font-size:clamp(18px,2vw,21px);line-height:1.5;color:var(--dim);max-width:60ch;margin-top:18px}
+.lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--meta);margin:0 0 8px}
+.small{font-size:14px;color:var(--meta)}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+section{padding:60px 0;border-top:1px solid var(--div)}
+section.hero{border-top:none;padding:56px 0 48px}
+.chap{display:grid;grid-template-columns:56px 1fr;gap:18px;align-items:start;margin-bottom:22px}
+.num{width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-family:var(--mono);font-size:18px}
+.chap h2{font-size:clamp(28px,3.6vw,38px);letter-spacing:-.025em;line-height:1.08}
+.chap p{color:var(--dim);max-width:64ch;margin:8px 0 0}
+@media (max-width:640px){.chap{grid-template-columns:44px 1fr;gap:12px}.num{width:44px;height:44px;font-size:15px}}
+
+.proto{border:1px solid var(--ink);border-radius:16px;background:var(--surface);overflow:hidden}
+.proto-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--div);background:var(--muted)}
+.proto-bar i{width:9px;height:9px;border-radius:50%;background:var(--div);display:block;flex:none}
+.proto-bar span{margin-left:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--meta);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proto-body{padding:20px}
+@media (max-width:640px){.proto-body{padding:14px}}
+
+.btn{border:1px solid var(--ink);background:var(--surface);color:var(--ink);border-radius:99px;padding:9px 16px;cursor:pointer;font-size:14px;font-weight:500}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.seg{display:inline-flex;border:1px solid var(--ink);border-radius:99px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:8px 14px;font-size:13.5px;cursor:pointer;color:var(--ink)}
+.seg button+button{border-left:1px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.seg button:disabled{color:var(--meta);cursor:not-allowed}
+.btn:focus-visible,.seg button:focus-visible,.rp:focus-visible,.fix:focus-visible,.mc:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--div);border-radius:99px;padding:3px 9px;color:var(--dim);background:var(--surface);white-space:nowrap}
+.pill.g{background:var(--grn-bg);color:var(--grn);border-color:transparent}
+.pill.r{background:var(--red-bg);color:var(--red);border-color:transparent}
+.pill.y{background:var(--yel-soft);color:var(--ink);border-color:transparent}
+
+/* hero figure */
+.hfig{margin-top:30px}
+.hfig svg{display:block;width:100%;min-width:640px;height:auto}
+.hf-box{fill:var(--surface);stroke:var(--ink);stroke-width:1.4}
+.hf-bad{fill:var(--red-bg);stroke:var(--red);stroke-width:1.6}
+.hf-good{fill:var(--grn-bg);stroke:var(--grn);stroke-width:1.6}
+.hf-hot{fill:var(--yel-soft);stroke:var(--ink);stroke-width:1.6}
+.hf-t{fill:var(--ink);font-family:var(--sans);font-size:14px}
+.hf-lab{fill:var(--meta);font-family:var(--mono);font-size:11px;letter-spacing:.12em}
+.hf-cap{font-family:var(--mono);font-size:11px}
+.hf-ar{stroke:var(--ink);stroke-width:1.4;fill:none}
+.hf-loop{stroke:var(--ink);stroke-width:1.4;fill:none;stroke-dasharray:4 4}
+
+/* parts legend */
+.parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin:0 0 18px}
+.part{border:1px solid var(--div);border-radius:10px;padding:10px 12px;background:var(--surface);font-size:14px;color:var(--ink)}
+.part b{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--meta);display:block;font-weight:500}
+
+/* 01 twins */
+.tcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:12px}
+.tcard{border:1px solid var(--div);border-radius:14px;background:var(--surface);padding:16px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s,transform .2s,box-shadow .2s}
+.tcard:hover{border-color:var(--ink);transform:translateY(-2px);box-shadow:var(--shadow)}
+.tc-head{display:flex;gap:10px;align-items:center}
+.av{width:38px;height:38px;flex:none;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font-family:var(--mono);font-size:14px;color:var(--ink);background:var(--surface)}
+.tc-head b{display:block;color:var(--ink);font-size:16px;line-height:1.2}
+.tc-head span{font-size:12.5px;color:var(--meta)}
+.tc-q{font-size:15px;color:var(--ink);font-style:italic;line-height:1.45;margin:0;border-left:3px solid var(--yel);padding-left:10px}
+.tc-row{font-size:13px;color:var(--dim);line-height:1.4;margin:0}
+.tc-row b{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--meta);font-weight:500;display:block}
+.lvls{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;font-size:12.5px;color:var(--dim);border-top:1px solid var(--div);padding-top:10px}
+.lvl{display:flex;gap:3px}
+.lvl i{width:9px;height:9px;border-radius:2px;background:var(--muted2);display:block}
+.lvl i.on{background:var(--ink)}
+
+/* 02 player */
+.pl-top{display:flex;flex-wrap:wrap;gap:12px 18px;justify-content:space-between;align-items:center;margin-bottom:14px}
+.setting{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.rounds{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.rp{border:1px solid var(--div);background:var(--surface);border-radius:10px;padding:8px 10px;text-align:left;cursor:pointer;color:var(--ink);line-height:1.25}
+.rp b{display:block;font-size:14px}
+.rp span{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--meta)}
+.rp[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 -3px 0 var(--yel)}
+@media (max-width:560px){.rounds{grid-template-columns:repeat(2,1fr)}}
+.pl-main{display:grid;grid-template-columns:1fr 250px;gap:20px}
+@media (max-width:880px){.pl-main{grid-template-columns:1fr}}
+.fac{border:1px dashed var(--ink);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:15px;color:var(--ink);background:var(--muted)}
+.fac b{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--meta);font-weight:500;display:block}
+.lane{display:grid;grid-template-columns:38px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--div)}
+.lane:last-child{border-bottom:none}
+.lane.pop{animation:pop .45s ease-out both}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ln-who{font-size:13px;color:var(--meta);margin-bottom:3px}
+.ln-who b{color:var(--ink);font-size:14px}
+.bub{display:inline-block;background:var(--muted);border-radius:4px 14px 14px 14px;padding:8px 12px;font-size:15px;color:var(--ink);line-height:1.45;max-width:100%}
+.bub.act{font-style:italic;color:var(--dim);background:transparent;border:1px dashed var(--div)}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;border-radius:6px;padding:2px 8px;border:1px solid transparent;line-height:1.5}
+.tag.ok{background:var(--grn-bg);color:var(--grn)}
+.tag.miss{border-color:var(--red);color:var(--red);background:var(--surface)}
+.tag.bar{background:var(--red-bg);color:var(--red)}
+.tag.note{background:var(--muted2);color:var(--dim)}
+.tally{border:1px solid var(--div);border-radius:12px;padding:14px;align-self:start;position:sticky;top:64px;background:var(--surface)}
+.tl-row{display:grid;grid-template-columns:72px repeat(4,1fr);gap:4px;align-items:center;margin-bottom:6px;font-size:13px;color:var(--ink)}
+.tl-row.h{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--meta);text-align:center}
+.tl-row.h span:first-child{text-align:left}
+.pc{height:18px;border-radius:4px;background:var(--muted2);display:block;transition:background .3s}
+.pc.l1{background:repeating-linear-gradient(135deg,var(--grn) 0 3px,var(--grn-bg) 3px 7px)}
+.pc.l2{background:var(--grn)}
+.key{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:12px;color:var(--meta);align-items:center}
+.key i{display:inline-block;width:14px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:4px}
+.legend{margin-top:14px;font-size:13px;color:var(--meta);display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+
+/* results */
+.stats{display:flex;flex-wrap:wrap;gap:14px 34px;margin-bottom:18px}
+.stat b{display:block;font-size:clamp(28px,3.4vw,36px);color:var(--ink);line-height:1.05;letter-spacing:-.02em}
+.stat span{font-size:14px;color:var(--meta)}
+.stat b.bad{color:var(--red)} .stat b.good{color:var(--grn)}
+.res{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+.res th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-align:left;border-bottom:2px solid var(--ink);padding:8px;color:var(--ink);font-weight:500}
+.res td{border-bottom:1px solid var(--div);padding:10px 8px;vertical-align:middle;color:var(--body)}
+.res td.k b{color:var(--ink);display:block}
+.res td.k span{font-size:12px;color:var(--meta)}
+.cells{display:grid;grid-template-columns:repeat(4,22px);gap:3px}
+.cells .pc{height:16px}
+.arrow{color:var(--meta);font-family:var(--mono);padding:0 2px}
+.ba{display:flex;align-items:center;gap:8px}
+.verdict{margin:16px 0 0;font-size:17px;color:var(--ink)}
+.verdict b{background:var(--yel-soft);padding:0 4px}
+
+/* 04 fixes */
+.fixes{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.fix{border:1px solid var(--div);border-radius:14px;padding:14px;background:var(--surface);text-align:left;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;gap:8px;transition:border-color .2s,box-shadow .2s,transform .2s;line-height:1.4}
+.fix:hover{border-color:var(--ink);transform:translateY(-2px)}
+.fix[aria-pressed="true"]{border-color:var(--grn);box-shadow:inset 0 0 0 1px var(--grn);background:var(--grn-bg)}
+.fix .fx-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.fix .fx-who{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--meta)}
+.fix b{font-size:16px}
+.fix span.d{font-size:13.5px;color:var(--dim)}
+.fix .also{font-size:12.5px;color:var(--ink);border-top:1px dashed var(--div);padding-top:6px}
+.fix .sw{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--meta)}
+.fix[aria-pressed="true"] .sw{color:var(--grn)}
+.fix.static{cursor:default;background:var(--muted)}
+.fix.static:hover{transform:none;border-color:var(--div)}
+.fx-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.after{margin-top:22px;padding-top:20px;border-top:1px solid var(--div)}
+.note{border-left:3px solid var(--red);background:var(--red-bg);padding:10px 14px;border-radius:0 10px 10px 0;font-size:14.5px;color:var(--ink);margin-top:14px}
+
+/* 05 map */
+.map{width:100%;border-collapse:separate;border-spacing:4px;min-width:720px;font-size:13px}
+.map th{font-weight:500;text-align:left;vertical-align:bottom;padding:4px 6px;color:var(--ink);font-size:13.5px;line-height:1.25}
+.map th span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--meta);font-weight:400}
+.map th.cc{box-shadow:inset 0 -3px 0 var(--yel)}
+.map td.rk{font-weight:700;color:var(--ink);white-space:nowrap;padding-right:8px}
+.map td.rk span{display:block;font-weight:400;font-size:12px;color:var(--meta)}
+.mc{width:100%;min-height:52px;border:1px solid transparent;border-radius:10px;cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--ink);text-align:left;padding:8px 10px;background:var(--muted2);transition:transform .15s,border-color .15s}
+.mc:hover{transform:translateY(-1px);border-color:var(--ink)}
+.mc.c4{background:var(--grn);color:#fff}
+.mc.c2{background:var(--grn-bg);color:var(--grn)}
+.mc.c0{background:var(--red-bg);color:var(--red)}
+.mc.out{background:repeating-linear-gradient(135deg,var(--muted) 0 5px,var(--surface) 5px 10px);color:var(--meta);border-color:var(--div)}
+.mc[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--yel)}
+.map tfoot td{font-family:var(--mono);font-size:11px;color:var(--ink);padding:6px;border-top:2px solid var(--ink)}
+.mdetail{margin-top:12px;font-size:15px;color:var(--ink);min-height:24px}
+.pick{margin-top:16px;border:1px solid var(--ink);border-radius:12px;padding:14px 16px;background:var(--muted)}
+.pick p{margin:0;color:var(--ink);font-size:16px}
+
+footer{border-top:1px solid var(--div);padding:28px 0 56px;font-size:14px;color:var(--meta)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar"><div class="wrap"><span><b>Learner digital twins</b> · critical thinking</span><span>Sample prototype</span></div></header>
+
+<main>
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Digital twins of Saudi youth</div>
+    <h1>Test it on the <em>twins</em> first.</h1>
+    <p class="lede">One programme has to build critical thinking in very different kids: an 8-year-old in Tabuk, a gifted 16-year-old in Riyadh, a 13-year-old in a wheelchair in Jeddah. Today you find out who it fails after the pilot. Digital twins show you before: how each kid thinks, where the session fails them, and what to change.</p>
+    <div class="hfig scroll-x" aria-hidden="true">
+      <svg viewBox="0 0 760 214">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="color:var(--ink)"/></marker></defs>
+        <text x="0" y="52" class="hf-lab">TODAY</text>
+        <rect x="110" y="28" width="170" height="44" rx="8" class="hf-box"/><text x="195" y="55" text-anchor="middle" class="hf-t">Design the programme</text>
+        <line x1="282" y1="50" x2="318" y2="50" class="hf-ar" marker-end="url(#ah)"/>
+        <rect x="320" y="28" width="170" height="44" rx="8" class="hf-box"/><text x="405" y="55" text-anchor="middle" class="hf-t">Pilot with real kids</text>
+        <line x1="492" y1="50" x2="528" y2="50" class="hf-ar" marker-end="url(#ah)"/>
+        <rect x="530" y="28" width="210" height="44" rx="8" class="hf-bad"/><text x="635" y="55" text-anchor="middle" class="hf-t">Find out who it fails</text>
+        <text x="740" y="92" text-anchor="end" class="hf-cap" style="fill:var(--red)">AFTER THE PILOT, AFTER THE BUDGET</text>
+        <text x="0" y="152" class="hf-lab">WITH TWINS</text>
+        <rect x="110" y="128" width="140" height="44" rx="8" class="hf-box"/><text x="180" y="155" text-anchor="middle" class="hf-t">Design a draft</text>
+        <line x1="252" y1="150" x2="288" y2="150" class="hf-ar" marker-end="url(#ah)"/>
+        <rect x="290" y="128" width="150" height="44" rx="8" class="hf-hot"/><text x="365" y="155" text-anchor="middle" class="hf-t">Test on the twins</text>
+        <line x1="442" y1="150" x2="478" y2="150" class="hf-ar" marker-end="url(#ah)"/>
+        <rect x="480" y="128" width="80" height="44" rx="8" class="hf-box"/><text x="520" y="155" text-anchor="middle" class="hf-t">Change</text>
+        <path d="M520,128 C520,104 365,104 365,126" class="hf-loop" marker-end="url(#ah)"/>
+        <line x1="562" y1="150" x2="588" y2="150" class="hf-ar" marker-end="url(#ah)"/>
+        <rect x="590" y="128" width="150" height="44" rx="8" class="hf-good"/><text x="665" y="155" text-anchor="middle" class="hf-t">Pilot what works</text>
+        <text x="740" y="192" text-anchor="end" class="hf-cap" style="fill:var(--grn)">BEFORE THE PILOT</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 01 -->
+<section id="s1">
+  <div class="wrap">
+    <div class="chap"><div class="num">01</div><div>
+      <h2>Meet the twins</h2>
+      <p>Five kids from the brief. Each twin carries the kid’s age, life, barriers and way of learning, plus a starting level in the four parts of critical thinking.</p>
+    </div></div>
+    <div class="parts" id="parts"></div>
+    <div class="tcards" id="twins"></div>
+    <p class="small" style="margin-top:12px">Starting levels: Starting · Growing · Solid · Strong. The levels and the twins’ words are sample content.</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="s2">
+  <div class="wrap">
+    <div class="chap"><div class="num">02</div><div>
+      <h2>Run one session</h2>
+      <p>The Community Council from the brief: five kids decide whether an empty plot becomes a park, a sports facility or a mall. The pack hides one claim with no source. Play it and read each twin’s reply. Every reply is tagged for the part of critical thinking it practises or misses.</p>
+    </div></div>
+    <div class="proto">
+      <div class="proto-bar"><i></i><i></i><i></i><span>The Community Council · 40 minutes · sample transcript</span></div>
+      <div class="proto-body">
+        <div class="pl-top">
+          <div class="seg" role="group" aria-label="Version">
+            <button type="button" id="vBefore" aria-pressed="true">As designed</button>
+            <button type="button" id="vAfter" aria-pressed="false" disabled title="Make the changes in step 04 first">With the changes</button>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn primary" id="plPlay">▶ Play the session</button>
+          </div>
+        </div>
+        <div class="setting" id="setting"></div>
+        <div class="rounds" id="rounds" role="group" aria-label="Rounds"></div>
+        <div class="pl-main">
+          <div>
+            <div class="fac" id="fac"></div>
+            <div id="lanes" aria-live="polite"></div>
+          </div>
+          <aside class="tally" aria-label="Practice so far">
+            <p class="lbl">Practice so far</p>
+            <div id="tally"></div>
+            <div class="key"><span><i class="pc l2" style="display:inline-block"></i>On their own</span><span><i class="pc l1" style="display:inline-block"></i>With help</span><span><i class="pc" style="display:inline-block"></i>Not yet</span></div>
+          </aside>
+        </div>
+        <div class="legend"><span class="tag ok">✓ practised</span><span class="tag miss">✗ missed</span><span class="tag bar">barrier to take part</span><span class="tag note">not heard</span><span>In the real bench, an observer agent adds these tags.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="s3">
+  <div class="wrap">
+    <div class="chap"><div class="num">03</div><div>
+      <h2>See who it fails, and why</h2>
+      <p>The session works for one kid. For the other four, the twins show the reason. Two are design problems inside the session. Two are barriers that stop the kid from taking part at all.</p>
+    </div></div>
+    <div class="proto">
+      <div class="proto-bar"><i></i><i></i><i></i><span>Results · as designed · sample</span></div>
+      <div class="proto-body">
+        <div class="stats" id="s3stats"></div>
+        <div class="scroll-x"><table class="res" id="s3table"></table></div>
+        <p class="verdict" id="s3verdict"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section id="s4">
+  <div class="wrap">
+    <div class="chap"><div class="num">04</div><div>
+      <h2>Change it. Run it again.</h2>
+      <p>The twins point to one change per kid. Turn the changes on, then run the session again. Try it with some changes off, too: one kid’s change can decide if the others get heard.</p>
+    </div></div>
+    <div class="proto">
+      <div class="proto-bar"><i></i><i></i><i></i><span>Four changes · sample</span></div>
+      <div class="proto-body">
+        <div class="fixes" id="fixes"></div>
+        <div class="fx-btns">
+          <button type="button" class="btn" id="fxAll">Turn on all four</button>
+          <button type="button" class="btn primary" id="fxRun">▶ Run it again</button>
+          <span class="small" id="fxHint">Nothing runs until you press Run.</span>
+        </div>
+        <div class="after" id="after" aria-live="polite" hidden></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section id="s5">
+  <div class="wrap">
+    <div class="chap"><div class="num">05</div><div>
+      <h2>Then test every format</h2>
+      <p>Run the same test for all five formats in the brief. The map shows how many of the four parts each kid practises in each format. It tells you what to pilot first, before you spend on the pilot. Click any cell for the reason.</p>
+    </div></div>
+    <div class="proto">
+      <div class="proto-bar"><i></i><i></i><i></i><span>5 kids × 5 formats · parts of critical thinking practised · sample</span></div>
+      <div class="proto-body">
+        <div class="scroll-x"><table class="map" id="map"></table></div>
+        <p class="mdetail" id="mdetail" aria-live="polite">Click a cell.</p>
+        <div class="pick" id="pick"></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">The five kids, the five formats and the four parts of critical thinking come from the brief. The twins’ words, the starting levels, the tags and every result on this page are hand-written sample content, to show the idea. In the real bench, AI twins produce them, and a pilot with real kids confirms them.</div></footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- data ---------- */
+  var PARTS = [
+    {k:"Q", name:"Question assumptions", short:"Question"},
+    {k:"E", name:"Evaluate evidence", short:"Evidence"},
+    {k:"M", name:"Identify misinformation", short:"Misinformation"},
+    {k:"D", name:"Make well-reasoned decisions", short:"Decision"}
+  ];
+  var LEVEL = ["", "Starting", "Growing", "Solid", "Strong"];
+
+  var KIDS = [
+    {id:"omar", first:"Omar", name:"Omar Al-Anazi", ini:"O", age:8, city:"Tabuk", role:"Resident",
+     quote:"I want to be an inventor. Long talks make my legs want to run.",
+     barrier:"Long lectures and abstract ideas lose him.", learns:"Play, games, stories, hands-on discovery",
+     start:{Q:1,E:1,M:1,D:1}},
+    {id:"reem", first:"Reem", name:"Reem Al-Harbi", ini:"R", age:13, city:"Jeddah", role:"Resident spokesperson",
+     quote:"I draw stories on my tablet. I hate it when a building has no lift and I miss things.",
+     barrier:"Uses a wheelchair. Buildings and transport are often not accessible.", learns:"Visual content, digital tools, creative group work",
+     start:{Q:2,E:2,M:2,D:2}},
+    {id:"faisal", first:"Faisal", name:"Faisal Al-Shahrani", ini:"F", age:14, city:"Abha", role:"Youth sports club",
+     quote:"Football every afternoon. At home I share one tablet with my two brothers.",
+     barrier:"Lower-income family. No money for paid activities, kit or travel.", learns:"Hands-on work, teamwork, sport, everyday examples",
+     start:{Q:2,E:1,M:2,D:2}},
+    {id:"abdullah", first:"Abdullah", name:"Abdullah Al-Qahtani", ini:"A", age:16, city:"Riyadh", role:"Business owner",
+     quote:"Give me the hardest problem. Easy work is boring.",
+     barrier:"Few advanced challenges. Pressure to always beat his peers.", learns:"Hard problems, independent work, competitions",
+     start:{Q:2,E:3,M:3,D:3}},
+    {id:"noura", first:"Noura", name:"Noura Al-Dossary", ini:"N", age:18, city:"Dammam", role:"Environment expert",
+     quote:"Engineering, maybe. I want to see what engineers actually do all day.",
+     barrier:"Unsure which career fits. Little real exposure.", learns:"Real cases, career simulations, industry projects",
+     start:{Q:3,E:3,M:2,D:3}}
+  ];
+
+  var ROUNDS = [
+    {name:"Briefing", min:"0–10 min"},
+    {name:"Evidence", min:"10–20 min"},
+    {name:"Debate", min:"20–32 min"},
+    {name:"Decision", min:"32–40 min"}
+  ];
+
+  /* b = as designed, a = with this kid's change. tok = as designed, but with talk tokens on. */
+  var LINES = {
+    omar:[
+      {b:{t:"Is the mall going to have a toy shop?", tags:[{note:"off task"}]},
+       a:{t:"I’m a resident! I’ve got three cards: park, sports place, mall.", tags:[]}},
+      {b:{t:"There are too many words. Can I draw it instead?", tags:[{miss:"E", why:"six pages of text"}]},
+       a:{t:"This card says 2,000 jobs. Who made it? The mall people! So maybe it’s not true.", tags:[{p:"M", lv:1}]}},
+      {b:{t:"(Tries to speak once. Nobody hears him.)", act:true, tags:[{note:"not heard"}]},
+       a:{t:"If we build a mall, where do kids play?", tags:[{p:"Q", lv:1}]},
+       tok:{t:"(Uses a token.) The mall has a toy shop!", tags:[{miss:"Q", why:"heard, but no evidence to use"}]}},
+      {b:{t:"Mall. Because it has toys.", vote:"mall", tags:[{miss:"D", why:"no evidence in the reason"}]},
+       a:{t:"Park. Kids need a place to play. And the jobs card came from the mall.", vote:"park", tags:[{p:"D", lv:1},{p:"E", lv:1}]}}
+    ],
+    reem:[
+      {b:{t:"I’m joining by video. The room is upstairs. I can only hear half of it.", tags:[{bar:"room has no lift"}]},
+       a:{t:"My question first: can everyone get into each option? The park plan has no paths a wheelchair can use.", tags:[{p:"Q", lv:2}]}},
+      {b:{t:"I can’t see the map on the shared screen. Can someone hold it closer?", tags:[{bar:"joins by video"}]},
+       a:{t:"I zoomed in on the park photo. The sign is from another city. That’s not our plot.", tags:[{p:"M", lv:2}]}},
+      {b:{t:"Can I say something about the—", tags:[{note:"cut off"}]},
+       a:{t:"I mapped shade and paths from the photos. Only the park plan has shade in the afternoon.", tags:[{p:"E", lv:2}]},
+       tok:{t:"(Uses a token, on video.) Sorry, I lost the sound. What was the question?", tags:[{bar:"joins by video"}]}},
+      {b:{t:"I’ll go with what the group says.", vote:"mall", tags:[{miss:"D", why:"follows the group"}]},
+       a:{t:"Park, with step-free paths and shade. It’s the only option every resident can use.", vote:"park", tags:[{p:"D", lv:2}]}}
+    ],
+    faisal:[
+      {b:{t:"Youth sports club. Sports facility. Easy.", tags:[]},
+       a:{t:"We read the pack together, here. I lead the sports-club team with my partner.", tags:[]}},
+      {b:{t:"I didn’t read the pack. My brothers had the tablet all night.", tags:[{bar:"shares one tablet at home"}]},
+       a:{t:"The jobs flyer is from the mall company. Of course they say 2,000. That’s not proof.", tags:[{p:"M", lv:2}]}},
+      {b:{t:"The mall makes 2,000 jobs, the flyer says. But we still need a pitch.", tags:[{miss:"M", why:"repeats the flyer"}]},
+       a:{t:"Every claim needs a number. Ours: 300 kids play football on the street now. Page 4.", tags:[{p:"E", lv:2}]}},
+      {b:{t:"Sports facility. Because I like football.", vote:"sports facility", tags:[{miss:"D", why:"a feeling, not a reason"}]},
+       a:{t:"I changed my mind. Park, with a pitch in it. More people use it, and the jobs number had no proof.", vote:"park", tags:[{p:"Q", lv:2},{p:"D", lv:2}]}}
+    ],
+    abdullah:[
+      {b:{t:"I read the whole pack last night. The mall is obvious.", tags:[]},
+       a:{t:"I’ve got the hardest pack: the full budget and the heat data.", tags:[]}},
+      {b:{t:"Return per square metre is highest for the mall. The numbers are clear.", tags:[{p:"E", lv:2}]},
+       a:{t:"The mall has the best return per square metre. But return for whom? The owner, not the residents.", tags:[{p:"E", lv:2},{p:"Q", lv:2}]}},
+      {b:{t:"Let me finish. Nobody has a better number, so: mall.", tags:[{miss:"Q", why:"never tests his own view"},{note:"takes most of the talk time"}]},
+       a:{t:"First, the other side. Noura says the jobs number has no source. She’s right. So my best number is gone.", tags:[{p:"M", lv:1},{p:"Q", lv:2}]}},
+      {b:{t:"Mall. The numbers win.", vote:"mall", tags:[{p:"D", lv:1}]},
+       a:{t:"Park. I argued for the mall and lost on the evidence. That’s fair.", vote:"park", tags:[{p:"D", lv:2}]}}
+    ],
+    noura:[
+      {b:{t:"Who made this pack? Part of it comes from the mall developer.", tags:[{p:"Q", lv:2}]}},
+      {b:{t:"The 2,000 jobs number is from the mall’s own flyer. There is no study behind it.", tags:[{p:"M", lv:2}]}},
+      {b:{t:"The park survey asked 50 people on one street. That is not the neighbourhood.", tags:[{p:"E", lv:2}]}},
+      {b:{t:"Park, with shade. This plot is the hottest in the area in the afternoon, and the jobs claim has no source.", vote:"park", tags:[{p:"D", lv:2}]}}
+    ]
+  };
+  var OVER = {t:"(Starts to speak. The open floor goes to Abdullah.)", act:true, tags:[{note:"not heard"}]};
+
+  var FIXES = [
+    {id:"omar", type:"Design", title:"Picture cards and short rounds", text:"Evidence as picture cards. Rounds of 5 minutes. Each card asks one question: who made this?"},
+    {id:"reem", type:"Access", title:"A step-free room. Her question first.", text:"Meet in a step-free room. Reem’s access question opens the agenda."},
+    {id:"faisal", type:"Access", title:"Read the pack in the session", text:"Print the pack and read it together in the session. No device needed at home. He leads a team of two."},
+    {id:"abdullah", type:"Design", title:"Talk tokens and a harder pack", text:"Two talk tokens each. Sum up the other side before you argue. The hardest data pack goes to Abdullah.", also:"Also lets Omar, Reem and Faisal be heard."}
+  ];
+  var BREAK = {
+    omar:{type:"Design", t:"The evidence is six pages of text and tables. He is 8."},
+    reem:{type:"Access", t:"The room is upstairs, with no lift. She joins by video and misses most of it."},
+    faisal:{type:"Access", t:"The pack is on an app, to read at home. He shares one tablet with his brothers."},
+    abdullah:{type:"Design", t:"The pack is easy and the floor is open. He wins alone and never tests his own view."},
+    noura:{type:"Works", t:"A real case with real evidence. She practises all four parts."}
+  };
+
+  var FORMATS = [
+    {id:"ge", name:"Fact or Fiction?", kind:"Learning game", min:8},
+    {id:"vg", name:"Build Your Saudi City", kind:"Video game", min:10},
+    {id:"inv", name:"Beat the Heat Challenge", kind:"Investigation", min:10},
+    {id:"deb", name:"The Saudi Youth Debate", kind:"AI debate", min:13},
+    {id:"cc", name:"The Community Council", kind:"Role-play", min:8}
+  ];
+  var MAP = {
+    omar:{ge:[2,"Spots the fake pictures. Cannot yet say why they are fake."], vg:null, inv:null, deb:null},
+    reem:{ge:[3,"Visual claims suit her. The game never asks who gains from a claim."], vg:[4,"She weighs trade-offs on a visual map."], inv:[1,"Site visits in the heat need step-free access."], deb:[3,"Works on her own device. Less visual than she likes."]},
+    faisal:{ge:[1,"Played at home on a device. He shares one tablet."], vg:[1,"Played at home on a device. He shares one tablet."], inv:[4,"Hands-on and outdoors, on his own football pitch."], deb:[2,"He prefers to argue with people, not type to an AI."]},
+    abdullah:{ge:[1,"Too easy. He chases points, not reasons."], vg:[4,"Hard trade-offs keep him thinking."], inv:[3,"He builds the sensors and skips the interviews."], deb:[4,"A hard opponent makes him test his own view."]},
+    noura:{ge:[2,"Feels like school. She does the minimum."], vg:[3,"Good trade-offs. No link to real jobs."], inv:[4,"A real case with real data."], deb:[3,"Good practice. No link to a career."]}
+  };
+
+  /* ---------- helpers ---------- */
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function part(k){ for (var i=0;i<PARTS.length;i++){ if (PARTS[i].k===k) return PARTS[i]; } return null; }
+  function kidById(id){ for (var i=0;i<KIDS.length;i++){ if (KIDS[i].id===id) return KIDS[i]; } return null; }
+  var NOFIX = {omar:false, reem:false, faisal:false, abdullah:false};
+
+  /* which line a twin says in a round, for a version and a set of changes */
+  function lineFor(kid, r, fx){
+    var L = LINES[kid.id][r];
+    if (!fx || kid.id==="noura") return L.b;
+    var own = fx[kid.id];
+    if (!own){ if (r===2 && fx.abdullah && L.tok) return L.tok; return L.b; }
+    if (r===2 && kid.id!=="abdullah" && !fx.abdullah) return OVER;
+    return L.a;
+  }
+  function practice(kid, fx, upto){
+    var p = {Q:0,E:0,M:0,D:0};
+    for (var r=0; r<=upto; r++){
+      lineFor(kid, r, fx).tags.forEach(function(t){ if (t.p && t.lv > p[t.p]) p[t.p] = t.lv; });
+    }
+    return p;
+  }
+  function count(p){ var n=0; for (var k in p){ if (p[k]>0) n++; } return n; }
+  function cells(p){ return '<div class="cells">'+PARTS.map(function(x){ return '<i class="pc'+(p[x.k] ? ' l'+p[x.k] : '')+'" title="'+esc(x.name)+'"></i>'; }).join("")+'</div>'; }
+  function allFour(fx){ return KIDS.filter(function(k){ return count(practice(k, fx, 3))===4; }).length; }
+  function votes(fx){
+    var v = {};
+    KIDS.forEach(function(k){ var x = lineFor(k, 3, fx).vote; v[x] = (v[x]||0) + 1; });
+    var arr = Object.keys(v).map(function(k){ return [k, v[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
+    var tie = arr.length>1 && arr[0][1]===arr[1][1];
+    var txt = arr.map(function(x){ return x[0].charAt(0).toUpperCase()+x[0].slice(1)+" "+x[1]; }).join(" · ");
+    return {top:arr[0][0], n:arr[0][1], tie:tie, txt:txt};
+  }
+  function tagHtml(t){
+    if (t.p) return '<span class="tag ok">✓ '+esc(part(t.p).short)+(t.lv===1 ? ' · with help' : '')+'</span>';
+    if (t.miss) return '<span class="tag miss">✗ '+esc(part(t.miss).short)+(t.why ? ' · '+esc(t.why) : '')+'</span>';
+    if (t.bar) return '<span class="tag bar">barrier · '+esc(t.bar)+'</span>';
+    return '<span class="tag note">'+esc(t.note)+'</span>';
+  }
+
+  /* ---------- state ---------- */
+  var fx = {omar:false, reem:false, faisal:false, abdullah:false};
+  var ran = false, ranFx = null;
+  var ver = "before", round = 0, timer = null;
+  function playerFx(){ return ver==="after" ? ranFx : null; }
+
+  /* ---------- 01 twins ---------- */
+  document.getElementById("parts").innerHTML = PARTS.map(function(p, i){ return '<div class="part"><b>Part '+(i+1)+'</b>'+esc(p.name)+'</div>'; }).join("");
+  document.getElementById("twins").innerHTML = KIDS.map(function(k){
+    return '<article class="tcard"><div class="tc-head"><div class="av">'+k.ini+'</div><div><b>'+esc(k.name)+'</b><span>'+k.age+' · '+esc(k.city)+' · '+esc(k.role)+'</span></div></div>'
+      + '<p class="tc-q">“'+esc(k.quote)+'”</p>'
+      + '<p class="tc-row"><b>Barrier</b>'+esc(k.barrier)+'</p>'
+      + '<p class="tc-row"><b>Learns best by</b>'+esc(k.learns)+'</p>'
+      + '<div class="lvls">'+PARTS.map(function(p){ var v = k.start[p.k]; return '<span>'+esc(p.short)+'</span><span class="lvl" title="'+LEVEL[v]+'">'+[1,2,3,4].map(function(n){ return '<i class="'+(n<=v?'on':'')+'"></i>'; }).join("")+'</span>'; }).join("")+'</div>'
+      + '</article>';
+  }).join("");
+
+  /* ---------- 02 player ---------- */
+  function setting(f){
+    f = f || NOFIX;
+    var items = [
+      f.reem ? ["Step-free room", true] : ["First-floor room, no lift", false],
+      f.faisal ? ["Printed pack, read in the session", true] : ["Pack on an app, read at home", false],
+      f.omar ? ["Picture cards, 5-minute rounds", true] : ["Six pages of text", false],
+      f.abdullah ? ["Talk tokens", true] : ["Open floor", false]
+    ];
+    return items.map(function(x){ return '<span class="pill'+(x[1] ? ' g' : '')+'">'+esc(x[0])+'</span>'; }).join("");
+  }
+  function facText(r, f){
+    f = f || NOFIX;
+    if (r===0) return "One empty plot in our neighbourhood: a park, a sports facility or a mall? Each of you has a role."
+      + (f.faisal ? " We read the printed evidence pack together, now." : " You read the evidence pack on the app last night.")
+      + (f.reem ? " First on the agenda: Reem’s access question." : "");
+    if (r===1) return (f.omar ? "Evidence rounds of 5 minutes. Every card asks one question: who made this?" : "Ten minutes with the six-page pack. Questions at the end.")
+      + (f.abdullah ? " Abdullah takes the hardest pack." : "");
+    if (r===2) return f.abdullah ? "Two talk tokens each. Before you argue, sum up the other side." : "Open floor. Anyone can speak.";
+    var v = votes(f);
+    return "Vote, and give one reason. Result: " + v.txt + (v.tie ? ". No majority." : ".");
+  }
+  function renderPlayer(animate){
+    var f = playerFx();
+    document.getElementById("setting").innerHTML = setting(f);
+    document.getElementById("rounds").innerHTML = ROUNDS.map(function(r, i){ return '<button type="button" class="rp" data-r="'+i+'" aria-pressed="'+(i===round)+'"><span>Round '+(i+1)+' · '+r.min+'</span><b>'+r.name+'</b></button>'; }).join("");
+    document.getElementById("fac").innerHTML = '<b>Facilitator</b>'+esc(facText(round, f));
+    document.getElementById("lanes").innerHTML = KIDS.map(function(k, i){
+      var L = lineFor(k, round, f);
+      return '<div class="lane'+(animate ? ' pop' : '')+'" style="animation-delay:'+(animate ? i*0.12 : 0)+'s"><div class="av">'+k.ini+'</div><div>'
+        + '<div class="ln-who"><b>'+esc(k.first)+'</b> · '+k.age+' · '+esc(k.role)+'</div>'
+        + '<div class="bub'+(L.act ? ' act' : '')+'">'+(L.act ? esc(L.t) : '“'+esc(L.t)+'”')+'</div>'
+        + (L.tags.length ? '<div class="tags">'+L.tags.map(tagHtml).join("")+'</div>' : '')
+        + '</div></div>';
+    }).join("");
+    document.getElementById("tally").innerHTML = '<div class="tl-row h"><span></span>'+PARTS.map(function(p){ return '<span>'+esc(p.short.slice(0,5))+'</span>'; }).join("")+'</div>'
+      + KIDS.map(function(k){ var p = practice(k, f, round); return '<div class="tl-row"><span>'+esc(k.first)+'</span>'+PARTS.map(function(x){ return '<i class="pc'+(p[x.k] ? ' l'+p[x.k] : '')+'"></i>'; }).join("")+'</div>'; }).join("");
+  }
+  function stopPlay(){ if (timer){ clearInterval(timer); timer = null; } document.getElementById("plPlay").textContent = "▶ Play the session"; }
+  document.getElementById("rounds").addEventListener("click", function(e){
+    var b = e.target.closest(".rp"); if (!b) return;
+    stopPlay(); round = parseInt(b.getAttribute("data-r"), 10); renderPlayer(true);
+  });
+  document.getElementById("plPlay").addEventListener("click", function(){
+    if (timer){ stopPlay(); return; }
+    round = 0; renderPlayer(true);
+    this.textContent = "❚❚ Pause";
+    timer = setInterval(function(){
+      if (round >= 3){ stopPlay(); return; }
+      round++; renderPlayer(true);
+      if (round >= 3) stopPlay();
+    }, 3200);
+  });
+  function setVer(v){
+    ver = v; stopPlay();
+    document.getElementById("vBefore").setAttribute("aria-pressed", String(v==="before"));
+    document.getElementById("vAfter").setAttribute("aria-pressed", String(v==="after"));
+    renderPlayer(true);
+  }
+  document.getElementById("vBefore").addEventListener("click", function(){ setVer("before"); });
+  document.getElementById("vAfter").addEventListener("click", function(){ if (!this.disabled) setVer("after"); });
+
+  /* ---------- 03 results as designed ---------- */
+  (function(){
+    var n = allFour(null), v = votes(null);
+    var design = 0, access = 0;
+    KIDS.forEach(function(k){ if (BREAK[k.id].type==="Design") design++; if (BREAK[k.id].type==="Access") access++; });
+    document.getElementById("s3stats").innerHTML =
+      '<div class="stat"><b class="bad">'+n+' of 5</b><span>kids practise all four parts</span></div>'
+      + '<div class="stat"><b>'+design+'</b><span>design problems</span></div>'
+      + '<div class="stat"><b>'+access+'</b><span>barriers to take part</span></div>'
+      + '<div class="stat"><b>'+esc(v.top.charAt(0).toUpperCase()+v.top.slice(1))+'</b><span>the council’s decision</span></div>';
+    document.getElementById("s3table").innerHTML = '<thead><tr><th>Twin</th><th>Practice</th><th>Parts</th><th>Where it broke</th><th>Type</th></tr></thead><tbody>'
+      + KIDS.map(function(k){
+          var p = practice(k, null, 3), c = count(p), b = BREAK[k.id];
+          var pc = b.type==="Works" ? "g" : (b.type==="Access" ? "r" : "y");
+          var label = b.type==="Access" ? "Barrier to take part" : (b.type==="Design" ? "Design problem" : "Works");
+          return '<tr><td class="k"><b>'+esc(k.first)+', '+k.age+'</b><span>'+esc(k.city)+'</span></td><td>'+cells(p)+'</td><td>'+c+' of 4</td><td>'+esc(b.t)+'</td><td><span class="pill '+pc+'">'+label+'</span></td></tr>';
+        }).join("") + '</tbody>';
+    document.getElementById("s3verdict").innerHTML = 'The council chose the <b>'+esc(v.top)+'</b>, on a jobs claim with no source. The session meant to teach kids to spot misinformation ended in a decision built on it.';
+  })();
+
+  /* ---------- 04 changes ---------- */
+  function renderFixes(){
+    document.getElementById("fixes").innerHTML = FIXES.map(function(f){
+      var k = kidById(f.id), on = fx[f.id];
+      return '<button type="button" class="fix" data-f="'+f.id+'" aria-pressed="'+on+'"><span class="fx-top"><span class="fx-who">For '+esc(k.first)+', '+k.age+'</span><span class="pill '+(f.type==="Access" ? "r" : "y")+'">'+(f.type==="Access" ? "Access" : "Design")+'</span></span>'
+        + '<b>'+esc(f.title)+'</b><span class="d">'+esc(f.text)+'</span>'
+        + (f.also ? '<span class="also">'+esc(f.also)+'</span>' : '')
+        + '<span class="sw">'+(on ? "✓ On" : "Off · click to turn on")+'</span></button>';
+    }).join("")
+    + '<div class="fix static"><span class="fx-top"><span class="fx-who">For Noura, 18</span><span class="pill g">Works</span></span><b>No change</b><span class="d">The session already works for her. Keep the real case and the real evidence.</span></div>';
+  }
+  function renderAfter(){
+    var box = document.getElementById("after");
+    if (!ran){ box.hidden = true; return; }
+    box.hidden = false;
+    var b = allFour(null), a = allFour(ranFx), vb = votes(null), va = votes(ranFx);
+    var heard = [];
+    KIDS.forEach(function(k){ if (k.id!=="abdullah" && k.id!=="noura" && ranFx[k.id] && !ranFx.abdullah) heard.push(k.first); });
+    var rows = KIDS.map(function(k){
+      var pb = practice(k, null, 3), pa = practice(k, ranFx, 3);
+      var why;
+      if (k.id==="noura") why = "No change. It already worked.";
+      else if (!ranFx[k.id]) why = "No change made for "+k.first+".";
+      else if (k.id!=="abdullah" && !ranFx.abdullah) why = "Not heard in the open floor. Turn on Abdullah’s talk tokens.";
+      else { var f = FIXES.filter(function(x){ return x.id===k.id; })[0]; why = f.title+"."; }
+      return '<tr><td class="k"><b>'+esc(k.first)+', '+k.age+'</b></td><td><div class="ba">'+cells(pb)+'<span class="arrow">→</span>'+cells(pa)+'</div></td><td>'+count(pb)+' → '+count(pa)+' of 4</td><td>'+esc(why)+'</td></tr>';
+    }).join("");
+    box.innerHTML = '<div class="stats">'
+      + '<div class="stat"><b class="'+(a===5 ? "good" : "")+'">'+b+' → '+a+' of 5</b><span>kids practise all four parts</span></div>'
+      + '<div class="stat"><b>'+esc(vb.top.charAt(0).toUpperCase()+vb.top.slice(1))+' → '+(va.tie ? "No majority" : esc(va.top.charAt(0).toUpperCase()+va.top.slice(1)))+'</b><span>the council’s decision · '+esc(va.txt)+'</span></div>'
+      + '</div>'
+      + '<div class="scroll-x"><table class="res"><thead><tr><th>Twin</th><th>As designed → with the changes</th><th>Parts</th><th>Why</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+      + (heard.length ? '<div class="note">'+esc(heard.join(", "))+': '+(heard.length>1 ? "their changes work" : "the change works")+' only when Abdullah’s talk tokens are on. In an open floor, '+(heard.length>1 ? "they are" : "the twin is")+' not heard. One kid’s change decides if the others get a turn.</div>' : '')
+      + '<p style="margin:16px 0 0"><button type="button" class="btn" id="watch">Watch the new session in step 02 ↑</button></p>';
+    document.getElementById("watch").onclick = function(){ setVer("after"); document.getElementById("s2").scrollIntoView({behavior:"smooth"}); };
+  }
+  function copyFx(){ return {omar:fx.omar, reem:fx.reem, faisal:fx.faisal, abdullah:fx.abdullah}; }
+  document.getElementById("fixes").addEventListener("click", function(e){
+    var b = e.target.closest(".fix[data-f]"); if (!b) return;
+    var id = b.getAttribute("data-f"); fx[id] = !fx[id];
+    renderFixes();
+    if (ran){ ranFx = copyFx(); renderAfter(); renderMap(); if (ver==="after") renderPlayer(false); }
+  });
+  document.getElementById("fxAll").addEventListener("click", function(){
+    fx = {omar:true, reem:true, faisal:true, abdullah:true}; renderFixes();
+    if (ran){ ranFx = copyFx(); renderAfter(); renderMap(); if (ver==="after") renderPlayer(false); }
+  });
+  document.getElementById("fxRun").addEventListener("click", function(){
+    ran = true; ranFx = copyFx();
+    document.getElementById("vAfter").disabled = false;
+    document.getElementById("vAfter").removeAttribute("title");
+    document.getElementById("fxHint").textContent = "Results update live as you turn changes on or off.";
+    renderAfter(); renderMap();
+    if (ver==="after") renderPlayer(false);
+  });
+
+  /* ---------- 05 map ---------- */
+  var sel = null;
+  function cellFor(k, f){
+    if (k.age < f.min) return {n:-1, why:"Below the format’s target age ("+f.min+"+)."};
+    if (f.id==="cc"){
+      var useFx = ran ? ranFx : null, n = count(practice(k, useFx, 3));
+      var why;
+      if (!ran) why = BREAK[k.id].t;
+      else if (k.id==="noura") why = "Already worked. No change needed.";
+      else if (!ranFx[k.id]) why = "As designed: "+BREAK[k.id].t;
+      else if (k.id!=="abdullah" && !ranFx.abdullah) why = "With the change, but not heard in the open floor.";
+      else why = "With the change: "+FIXES.filter(function(x){ return x.id===k.id; })[0].title.toLowerCase()+".";
+      return {n:n, why:why};
+    }
+    var m = MAP[k.id][f.id];
+    return {n:m[0], why:m[1]};
+  }
+  function renderMap(){
+    var head = '<thead><tr><th></th>'+FORMATS.map(function(f){ return '<th class="'+(f.id==="cc" ? "cc" : "")+'">'+esc(f.name)+'<span>'+esc(f.kind)+' · '+f.min+'+'+(f.id==="cc" ? (ran ? " · with your changes" : " · as designed") : "")+'</span></th>'; }).join("")+'</tr></thead>';
+    var totals = FORMATS.map(function(){ return 0; });
+    var body = '<tbody>'+KIDS.map(function(k){
+      return '<tr><td class="rk">'+esc(k.first)+'<span>'+k.age+' · '+esc(k.city)+'</span></td>'+FORMATS.map(function(f, i){
+        var c = cellFor(k, f);
+        if (c.n===4) totals[i]++;
+        var cls = c.n<0 ? "out" : (c.n===4 ? "c4" : (c.n>=2 ? "c2" : "c0"));
+        var txt = c.n<0 ? "Too young" : (c.n+" of 4");
+        var key = k.id+"|"+f.id;
+        return '<td><button type="button" class="mc '+cls+'" data-k="'+key+'" aria-pressed="'+(sel===key)+'">'+txt+'</button></td>';
+      }).join("")+'</tr>';
+    }).join("")+'</tbody>';
+    var foot = '<tfoot><tr><td>All four parts</td>'+totals.map(function(t){ return '<td>'+t+' of 5 kids</td>'; }).join("")+'</tr></tfoot>';
+    document.getElementById("map").innerHTML = head + body + foot;
+    var cc = totals[4], best = 0;
+    for (var i=0;i<4;i++){ if (totals[i] > best) best = totals[i]; }
+    document.getElementById("pick").innerHTML = cc===5
+      ? '<p class="lbl">Pilot first</p><p><b>The Community Council, with the changes.</b> It is the only format that gives all five kids practice in all four parts. Then add the formats that work best for the older kids: Beat the Heat Challenge and Build Your Saudi City.</p>'
+      : '<p class="lbl">Pilot first</p><p>As it stands, no format gives all five kids practice in all four parts. The best reaches '+Math.max(best, cc)+' of 5. Make the changes in step 04 and watch the Council column.</p>';
+    if (sel) showDetail(sel);
+  }
+  function showDetail(key){
+    var p = key.split("|"), k = kidById(p[0]), f = null;
+    FORMATS.forEach(function(x){ if (x.id===p[1]) f = x; });
+    var c = cellFor(k, f);
+    document.getElementById("mdetail").innerHTML = '<b>'+esc(k.first)+' × '+esc(f.name)+':</b> '+esc(c.why);
+  }
+  document.getElementById("map").addEventListener("click", function(e){
+    var b = e.target.closest(".mc"); if (!b) return;
+    sel = b.getAttribute("data-k"); renderMap();
+  });
+
+  renderPlayer(false);
+  renderFixes();
+  renderMap();
+})();
+</script>
+</body>
+</html>
